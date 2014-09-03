@@ -1,9 +1,6 @@
 #include "socklib.h"
-void inline oops(string as)
-{
-	    perror(as.c_str());
-	    exit(1);
-}
+void inline oops(string as);
+
 
 c_serve::c_serve(int port)     //绑定一个本地套接字
 {
@@ -59,14 +56,25 @@ c_client::c_client(string host,int port)
          connect(fd, (sockaddr *)& addr, sizeof(addr));
 }
 
-int c_client::send(char buffer[],int len=M_BUFFER,int flag=0)
+int c_client::send(char buffer[],int len,int flag)
 {
          return ::send(fd,buffer,len,flag);
 }
 
-int c_client::recv(char buffer[],int len=M_BUFFER,int flag=0)
+int c_client::recv(char buffer[],int len,int flag)
 {
          return ::recv(fd,buffer,len,flag);
 }
 
-
+void c_client::socket_config(int f)
+{
+	   int flags  = fcntl(fd,F_GETFL,0);                          //获取文件的flags值。
+	   if(f==0)
+	   {
+              fcntl(fd,F_SETFL,flags&~O_NONBLOCK);      //设置成阻塞模式；  
+		}
+		else
+		{
+                 fcntl(fd, F_SETFL, flags | O_NONBLOCK);   //设置成非阻塞模式；
+		}   
+}
