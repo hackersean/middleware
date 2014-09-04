@@ -29,10 +29,8 @@ int main(int ac,char *av[])
     int len;   
 	while((len=node.make())>0)
 	{
-		for(int i=0;i<len;++i)
-			printf("%c",node.ans[i]);
+		 cout<<node.ans;
 	}
-	cout<<"end"<<endl;
 	
 	
 	
