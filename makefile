@@ -1,5 +1,5 @@
 G=g++ -W
-socklib=socklib.h socklib.cpp 
+socklib=socklib.h socklib.cpp strplay.h strplay.cpp
 all: $(socklib) serve.cpp client.cpp
 	$(G) $(socklib)  serve.cpp -o serve
 	$(G) $(socklib)  client.cpp -o client

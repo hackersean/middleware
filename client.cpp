@@ -18,7 +18,7 @@ int main(int ac,char *av[])
 	    char buff[M_BUFFER];
 	    ceve.socket_config(0);
 	    
-		int flag=4;
+		int flag=fork();
 		if(flag==0)
 		{
     //               c_client client(av[1],port);
@@ -28,10 +28,12 @@ int main(int ac,char *av[])
 		         
 		        cout<<"fork"<<endl;
 			    int x;
-		         while((x=ceve.recv(buff)))
+		         while(true)
 		         {
 		//		     sleep(1);
-					      cout<<x<<" "<<buff<<endl;
+		                      x=ceve.recv(buff);
+					      for(int i=0;i<x;i++)   cout<<buff[i];
+				      if(x==0) break;
 				 }
 		}
 		else

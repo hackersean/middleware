@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/mman.h>   //mmap头文件
 
 #include <stdio.h>
 #include <string.h>
@@ -18,6 +19,12 @@
 #include <iostream>
 using namespace std;
 #define M_BUFFER 300
+
+void inline oops(string as)
+{
+	    perror(as.c_str());
+	    exit(1);
+}
 
 class c_serve
 {
@@ -39,10 +46,6 @@ class c_client
          void socket_config(int f=0);
 };
 
-void inline oops(string as)
-{
-	    perror(as.c_str());
-	    exit(1);
-}
+
 
 #endif

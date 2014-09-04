@@ -53,7 +53,10 @@ c_client::c_client(string host,int port)
          addr.sin_port = htons(port);  
          addr.sin_addr.s_addr = inet_addr(host.c_str());  
          
-         connect(fd, (sockaddr *)& addr, sizeof(addr));
+         while(connect(fd, (sockaddr *)& addr, sizeof(addr))!=0)
+         {
+		            continue;
+		}
 }
 
 int c_client::send(char buffer[],int len,int flag)
