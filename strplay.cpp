@@ -14,9 +14,8 @@ DATA::DATA(char path[]):ptr(0)
 {
     fd = open(path,O_RDONLY);
     xln = lseek(fd,0,SEEK_END); 
-	
     buf = (char *) mmap(NULL,xln,PROT_READ,MAP_PRIVATE,fd,0);
- 
+	ptr=buf;
 	end=buf+xln;
  
 }

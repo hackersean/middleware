@@ -31,4 +31,4 @@ header:$(socklib.h)
 	$(G) strplay.h strplay.cpp
 
 clean:
-	rm -rf *.o serve client
+	rm -rf *.o *,gch serve client 

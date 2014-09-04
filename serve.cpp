@@ -23,22 +23,17 @@ int main(int ac,char *av[])
 //	 data_transfer(serve.accept());
 	 
 	DATA data(path); 
-    for(char *ps=data.ptr;ps!=data.end;++ps)
-	{
-        //  cout<<*ps<<endl;
-	}
-/*
+
 	NODE node(&data); //printf("hello");
 //      cout<<data.buf<<endl;
-    int len;         
-	cout<<"fil"<<endl;
+    int len;   
 	while((len=node.make())>0)
 	{
 		for(int i=0;i<len;++i)
 			printf("%c",node.ans[i]);
 	}
 	cout<<"end"<<endl;
-*/	
+	
 	
 	
 	 return 0;
