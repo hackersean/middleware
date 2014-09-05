@@ -1,4 +1,4 @@
-G=g++ -w
+G=g++ -w -lpthread
 socklib=socklib.h socklib.cpp config.h 
 strplay=strplay.h strplay.cpp config.h
 osock=socklib.o 

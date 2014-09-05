@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/mman.h>   //mmap头文件
+#include   <pthread.h>   //线程库
 
 #include <stdio.h>
 #include <string.h>
@@ -17,6 +18,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
+#include <vector>
+#include <queue>
 
 using namespace std;
 
