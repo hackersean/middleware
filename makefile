@@ -1,6 +1,6 @@
-G=g++ -W
-socklib=socklib.h socklib.cpp 
-strplay=strplay.h strplay.cpp
+G=g++ -w
+socklib=socklib.h socklib.cpp config.h 
+strplay=strplay.h strplay.cpp config.h
 osock=socklib.o 
 ostr=strplay.o
 all: $(socklib) serve.cpp client.cpp

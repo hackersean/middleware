@@ -4,12 +4,17 @@ using namespace std;
 char path[]="/data/data";
 
 
-
-void data_transfer(int fd)
+void read_data(DATA &data)
 {
-	     
+	int len;
+	NODE temp;
+    while(fgets(temp.str,BUFFER,data.fp)!=NULL)
+	{
+	      len=temp.play();
+//		  serve.send(temp.ans,len);
+		  cout<<temp.ans;
+	}
 }
-
 
 int main(int ac,char *av[])
 {
@@ -20,18 +25,12 @@ int main(int ac,char *av[])
 	
 //	c_serve serve(atoi(av[1]));
 
-//	 data_transfer(serve.accept());
+//	serve.accept();
 	 
 	DATA data(path); 
+	read_data(data);
+	
 
-	NODE node(&data);
-//      cout<<data.buf<<endl;
-    int len;
-	while((len=node.make())>0)
-	{
-	     printf("%s",node.ans);
-//		 getchar();
-	}
 	
 //	cout<<"over"<<endl;
 	
