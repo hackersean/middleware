@@ -8,13 +8,19 @@ void read_data(DATA &data,int fd)
 {
 	int len;
 	NODE temp;
-	
+/*	
     while(fgets(temp.str,BUFFER,data.fp)!=NULL)
 	{
 		  recv(fd,buff,BUFFER,0);
 	      len=temp.play();
           send(fd,temp.ans,len,0);
 		  
+	}
+*/
+    while(true)
+	{
+           recv(fd,buff,BUFFER,0);
+		   cout<<buff<<endl;
 	}
 }
 
