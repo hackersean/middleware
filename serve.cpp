@@ -7,11 +7,6 @@ char path[]="/data/data";
 
 void data_transfer(int fd)
 {
-<<<<<<< HEAD
-	
-=======
-	     
->>>>>>> d8d585ead6c010090ade7986e5632ef0349440ea
 }
 
 
