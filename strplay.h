@@ -1,55 +1,71 @@
 #ifndef __SDATA__
 #define __SDATA__
 
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/mman.h>   //mmap头文件
-
-#include <stdio.h>
-#include <string.h>
-#include <string>
-#include <stdlib.h>
-#include <unistd.h>
-#include <iostream>
+#include "config.h"
 using namespace std;
-#define LL long long
-#define BUFFER 300
 
 
+inline void oops(char str[]){
+	    perror(str);
+	    exit(1);
+}
 
-class DATA
+struct NODE
 {
-	public:
-	 int fd;
-	 LL xln;
-	 char *ptr,*end;
-	 char *buf;
-   
-     DATA(char *path=NULL);
-};
-
-class NODE            //处理节点
-{   
-	public:
-     LL num;
-	 DATA *data;
+	 LL num;
+	 char *ps;
+     char str[BUFFER];
 	 char ans[BUFFER];
-     int play(char *str,int len);
-     int make();
-    
-      
-     NODE(DATA *);
+     
+	int play()
+	{
+		ps=ans;
+		int len(strlen(str));
+		ps=ans+sprintf(ans,"%lld",num);
+	
+//			                  cout<<"ok:   "<<num<<" "<<ans<<" "<<len<<" "<<ps<<endl;
+		int tp=len-2;
+		int t=tp/3;
+		int w=t*2;
+	//       cout<<t<<" "<<w<<endl;
+		for(int i=tp-1;i>=w;--i,++ps)
+		{
+			*ps=str[i];
+		}
+		for(int i=t-1;i>=0;--i,++ps)
+		{
+			*ps=str[i];
+		}
+
+		*ps='\r';
+		*++ps='\n';
+		*++ps=0;
+	//		cout<<"ko: "<<ps<<endl;
+	//		cout<<ans;
+		++num;
+		return ps-ans;
+	}
+	 NODE():num(0){}
 };
 
 
+struct DATA
+{
+	FILE* fp;                  //注意
+	DATA(char *path)
+	{
+		if((fp=fopen(path,"r"))!=NULL)
+		{
+			
+		}
+		else
+		{
+			oops("数据文件打开失败");
+		}
+    }    
+};
 
-
+void read_data(DATA &data);
 
 
 #endif

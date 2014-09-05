@@ -3,6 +3,11 @@
 using namespace std;
 
 
+inline void oops(char str[]){
+	    perror(str);
+	    exit(1);
+}
+
 
 
 int main(int ac,char *av[])
@@ -26,7 +31,7 @@ int main(int ac,char *av[])
 		else if(flag>0)                                       //father
 		{
 		         
-		        cout<<"fork"<<endl;
+//		        cout<<"fork"<<endl;
 			    int x;
 		         while(true)
 		         {

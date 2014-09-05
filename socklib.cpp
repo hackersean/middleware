@@ -1,5 +1,9 @@
 #include "socklib.h"
-void inline oops(string as);
+
+inline void oops(char str[]){
+	    perror(str);
+	    exit(1);
+}
 
 
 c_serve::c_serve(int port)     //绑定一个本地套接字
