@@ -2,13 +2,13 @@
 #include "strplay.h"
 using namespace std;
 char path[]="/data/data";
-
+char buff[BUFFER];
 
 void read_data(DATA &data,int fd)
 {
 	int len;
 	NODE temp;
-	char buff[BUFFER];
+	
     while(fgets(temp.str,BUFFER,data.fp)!=NULL)
 	{
 		  recv(fd,buff,BUFFER,0);
