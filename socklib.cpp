@@ -28,7 +28,7 @@ c_serve::c_serve(int port)     //绑定一个本地套接字
 		       oops("bind error");   
 		}
 		//start listen
-		if(listen(fd,255)<0)
+		if(listen(fd,5)<0)
 		{
 		       oops("listen error");
 		}
@@ -85,12 +85,4 @@ void c_client::socket_config(int f)
 		{
                  fcntl(fd, F_SETFL, flags | O_NONBLOCK);   //设置成非阻塞模式；
 		}   
-}
-
-void c_client::set_nodelay()
-{
-	 int flag = 1;
-     int ret = setsockopt( fd, IPPROTO_TCP, TCP_CORK, (char *)&flag, sizeof(flag) );
-
-
 }

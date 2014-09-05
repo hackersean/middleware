@@ -24,7 +24,6 @@ class c_client
          int send(char buffer[],int len=M_BUFFER,int flag=0);
          int recv(char buffer[],int len=M_BUFFER,int flag=0);
          void socket_config(int f=0);
-		 void set_nodelay();
 };
 
 

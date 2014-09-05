@@ -1,7 +1,9 @@
 #include "socklib.h"
+#define MAX 1000000
+char buff[M_BUFFER];
+char info[]="sta\0safasdft\r";
 
-using namespace std;
-
+//function
 
 inline void oops(char str[]){
 	    perror(str);
@@ -9,6 +11,18 @@ inline void oops(char str[]){
 }
 
 
+void writefile(FILE *file,c_client &ceve)
+{
+	 int x;
+	 while(true)
+	 {
+		 ceve.send(info);
+		 x=ceve.recv(buff);
+		 if(x==0) break;
+		 fwrite(buff,x,1,file);
+	 }
+	 fclose(file);
+}
 
 int main(int ac,char *av[])
 {
@@ -16,44 +30,19 @@ int main(int ac,char *av[])
         {
 			    perror("argument error");
 		} 
-		char info[]="start\r";
+		
 		int port=atoi(av[2]); 
 		cout<<av[1]<<" "<<port<<endl;
-//		getchar();
+		
 		c_client ceve(av[1],port); 
-	   // ceve.send(info,sizeof info);
-	    char buff[M_BUFFER];
-//	    ceve.socket_config(0);
-	    
-		int flag=fork();
-		if(flag==0)
-		{
-    //               c_client client(av[1],port);
-		}
-		else if(flag>0)                                       //father
-		{
-		        FILE *file;
-				if((file=fopen(av[3],"w"))==NULL)
-					oops("fwrite fail");
-//		        cout<<"fork"<<endl;
-			    int x;
-		         while(true)
-		         {
-					 ceve.send(info);
-		//		     sleep(1);
-		             x=ceve.recv(buff);
-//					 cout<<x<<endl;
-				     if(x==0) break;
-					 fwrite(buff,x,1,file);
-				 }
-				 fclose(file);
-		}
-		else
-		{
-		         oops("fork error");
-		}
+
+		FILE *file;
+		if((file=fopen(av[3],"w"))==NULL)
+			oops("fwrite fail");
 		
+        writefile(file,ceve);
 		
+			   
 		
          return 0;
 }
