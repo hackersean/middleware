@@ -17,10 +17,12 @@ void read_data(DATA &data,int fd)
 		  
 	}
 */
-    while(true)
+    int x;
+    while(x=recv(fd,buff,BUFFER,0))
 	{
-           recv(fd,buff,BUFFER,0);
-		   cout<<buff<<endl;
+           
+		   cout<<x<<" "<<buff;
+		   
 	}
 }
 
