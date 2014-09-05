@@ -31,12 +31,9 @@ int NODE::make()
     }
 	
 	++ps;
-//	cout<<"/ntes:"<<*ps<<endl;
-//	getchar();
 	len=ps-(data->ptr);
     len=play(data->ptr,len);        //保存处理后的长度
 	data->ptr=ps;
-//	cout<<len<<endl;
     return len;
 }
 
@@ -49,11 +46,9 @@ int NODE::play(char *str,int len)
 	{
 		++ps;
 	}
-//	 cout<<"ok:   "<<num<<" "<<ans<<" "<<len<<" "<<ps-ans<<"    "<<endl;
 	int tp=len-2;
 	int t=tp/3;
 	int w=t*2;
-//       cout<<t<<" "<<w<<endl;
 
 	for(int i=tp-1;i>=w;--i,++ps)
 	{
@@ -66,18 +61,7 @@ int NODE::play(char *str,int len)
 
 	*ps='\r';
 	*++ps='\n';
-/*
-//		cout<<"ko: "<<ps<<endl;
-    if(num==219177 || num==219178 || num==219179 || num==219180){
-	    
-		 for(char *i=ans;i<=ps;++i)
-		{
-			 printf("%c",*i);
-		}
-		//cout<<endl;
-//		getchar();
-	}
-*/
+	*++ps=0;
 	++num;
 	return ps-ans+1;
 }
