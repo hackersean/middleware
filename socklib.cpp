@@ -28,7 +28,7 @@ c_serve::c_serve(int port)     //绑定一个本地套接字
 		       oops("bind error");   
 		}
 		//start listen
-		if(listen(fd,255)<0)
+		if(listen(fd,5)<0)
 		{
 		       oops("listen error");
 		}

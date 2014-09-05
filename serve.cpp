@@ -8,8 +8,10 @@ void read_data(DATA &data,int fd)
 {
 	int len;
 	NODE temp;
+	char buff[BUFFER];
     while(fgets(temp.str,BUFFER,data.fp)!=NULL)
 	{
+		  recv(fd,buff,BUFFER,0);
 	      len=temp.play();
           send(fd,temp.ans,len,0);
 		  
@@ -22,17 +24,15 @@ int main(int ac,char *av[])
 	{
 		oops("argument error");
 	} 
-	
+//	cout<<"start"<<endl;
 	c_serve serve(atoi(av[1]));
 
 	int fd=serve.accept();
-	 
+	cout<<"start"<<endl;
 	DATA data(path); 
 	read_data(data,fd);
 	
-
-	
-//	cout<<"over"<<endl;
+	cout<<"over"<<endl;
 	
 	 return 0;
 }
