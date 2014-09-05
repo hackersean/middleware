@@ -1,5 +1,5 @@
 #include "socklib.h"
-#include "strplay,h"
+#include "strplay.h"
 using namespace std;
 
 char * read_data(char path[])
@@ -12,7 +12,7 @@ char * read_data(char path[])
 
 void data_transfer(int fd)
 {
-	       
+	
 }
 
 
