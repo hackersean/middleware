@@ -12,12 +12,14 @@ inline void oops(char str[]){
 
 int main(int ac,char *av[])
 {
-        if(ac!=3)
+        if(ac!=4)
         {
 			    perror("argument error");
 		} 
 		char info[]="start\r";
 		int port=atoi(av[2]); 
+		cout<<av[1]<<" "<<port<<endl;
+//		getchar();
 		c_client ceve(av[1],port); 
 	   // ceve.send(info,sizeof info);
 	    char buff[M_BUFFER];
@@ -30,16 +32,21 @@ int main(int ac,char *av[])
 		}
 		else if(flag>0)                                       //father
 		{
-		         
-		        cout<<"fork"<<endl;
+		        FILE *file;
+				if((file=fopen(av[3],"w"))==NULL)
+					oops("fwrite fail");
+//		        cout<<"fork"<<endl;
 			    int x;
 		         while(true)
 		         {
+					 ceve.send(info);
 		//		     sleep(1);
-		                      x=ceve.recv(buff);
-					      for(int i=0;i<x;i++)   cout<<buff[i];
-				      if(x==0) break;
+		             x=ceve.recv(buff);
+//					 cout<<x<<endl;
+				     if(x==0) break;
+					 fwrite(buff,x,1,file);
 				 }
+				 fclose(file);
 		}
 		else
 		{
