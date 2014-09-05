@@ -21,7 +21,7 @@ int main(int ac,char *av[])
 		c_client ceve(av[1],port); 
 	   // ceve.send(info,sizeof info);
 	    char buff[M_BUFFER];
-	    ceve.socket_config(0);
+//	    ceve.socket_config(0);
 	    
 		int flag=fork();
 		if(flag==0)
@@ -31,7 +31,7 @@ int main(int ac,char *av[])
 		else if(flag>0)                                       //father
 		{
 		         
-//		        cout<<"fork"<<endl;
+		        cout<<"fork"<<endl;
 			    int x;
 		         while(true)
 		         {

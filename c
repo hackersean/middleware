@@ -1,3 +1,3 @@
-#!/usr/bin/bash
-./client 127.0.0.1 8888
+#!/bin/bash
+./client :10.97.240.135 8888
 
