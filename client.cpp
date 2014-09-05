@@ -30,9 +30,10 @@ void *writefile(void* arg)
 	 }
 	 fclose(file);
      */
-	 for(int i=0;i<=5;i++)
+	 for(int i=0;i<=2;i++)
 	{
 		  ceve->send("go",sizeof "go");
+	       cout<<"b"<<endl;
 	}
 
 } 
@@ -51,9 +52,10 @@ void *test(void* arg)
 	 }
 	 fclose(file);
      */
-	 for(int i=0;i<=5;i++)
+	 for(int i=0;i<=2;i++)
 	{
 		  ceve->send("hi",sizeof "hi");
+//		  cout<<"a"<<endl;
 	}
 
 } 
@@ -78,17 +80,17 @@ int main(int ac,char *av[])
          
 	   }
 	   */
-       pthread_create(&pid[1],NULL,writefile,&ceve);
-	   pthread_create(&pid[2],NULL,test,&ceve);
-		
-		pthread_join(pid[0],NULL);
+  //     pthread_create(&pid[0],NULL,writefile,&ceve);
+	   pthread_create(&pid[1],NULL,test,&ceve);
+		cout<<"ok"<<endl;
+//	   pthread_join(pid[0],NULL);
        pthread_join(pid[1],NULL);
 		for(int i=0;i<THREAD;i++)
 	    {
      //        pthread_join(pid[i],NULL);
 		}
 		
-	   
+	   cout<<"over"<<endl;
 			   
 		
          return 0;
