@@ -10,7 +10,7 @@ NODE::NODE(DATA *t_data):num(0),data(t_data)
 }
 
 
-DATA::DATA(char path[]):ptr(0)
+DATA::DATA(char path[])
 {
     fd = open(path,O_RDONLY);
     xln = lseek(fd,0,SEEK_END); 
@@ -20,49 +20,64 @@ DATA::DATA(char path[]):ptr(0)
  
 }
 
-LL NODE::make()
+int NODE::make()
 {
-	LL len=0;
+	int len=0;
     char *ps=data->ptr;
 	if(ps==data->end) return -1;
-	for(;ps<data->end && *ps!='\n';++ps)
+	for(;ps!=data->end && *ps!='\n';++ps)
 	{
-        
+                                                   //找出一个语句
     }
-	ps+=2;
+	
+	++ps;
+//	cout<<"/ntes:"<<*ps<<endl;
+//	getchar();
 	len=ps-(data->ptr);
-    play(data->ptr,len);
+    len=play(data->ptr,len);        //保存处理后的长度
 	data->ptr=ps;
+//	cout<<len<<endl;
     return len;
 }
 
-void NODE::play(char *str,LL len)
+int NODE::play(char *str,int len)
 {
 		
-	LL ps=0;
+	char *ps=ans;
 	sprintf(ans,"%lld",num);
-	while(ans[ps]!=0)
+	while(*ps!=0)
 	{
 		++ps;
 	}
-//		                  cout<<"ok:   "<<num<<" "<<ans<<" "<<len<<" "<<ps<<endl;
-	LL tp=len-2;
-	LL t=tp/3;
-	LL w=t*2;
+//	 cout<<"ok:   "<<num<<" "<<ans<<" "<<len<<" "<<ps-ans<<"    "<<endl;
+	int tp=len-2;
+	int t=tp/3;
+	int w=t*2;
 //       cout<<t<<" "<<w<<endl;
-	for(LL i=tp-1;i>=w;--i,++ps)
+
+	for(int i=tp-1;i>=w;--i,++ps)
 	{
-		ans[ps]=str[i];
+		*ps=str[i];
 	}
-	for(LL i=t-1;i>=0;--i,++ps)
+	for(int i=t-1;i>=0;--i,++ps)
 	{
-		ans[ps]=str[i];
+		*ps=str[i];
 	}
 
-	ans[ps]='\r';
-	ans[++ps]='\n';
-	++ps;
+	*ps='\r';
+	*++ps='\n';
+/*
 //		cout<<"ko: "<<ps<<endl;
-	cout<<ans;
+    if(num==219177 || num==219178 || num==219179 || num==219180){
+	    
+		 for(char *i=ans;i<=ps;++i)
+		{
+			 printf("%c",*i);
+		}
+		//cout<<endl;
+//		getchar();
+	}
+*/
 	++num;
+	return ps-ans+1;
 }

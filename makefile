@@ -11,8 +11,8 @@ all: $(socklib) serve.cpp client.cpp
 	$(G) $(osock) $(ostr) client.cpp -o client
 
 serve:$(socklib) $(strplay) serve.cpp
-	$(G) $(socklib) -c $(osock)
-	$(G) $(strplay) -c $(ostr)
+	$(G) -c $(socklib)
+	$(G) -c $(strplay)
 
 	$(G) $(osock) $(ostr) serve.cpp -o serve
 

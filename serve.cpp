@@ -24,15 +24,17 @@ int main(int ac,char *av[])
 	 
 	DATA data(path); 
 
-	NODE node(&data); //printf("hello");
+	NODE node(&data);
 //      cout<<data.buf<<endl;
-    int len;   
+    int len;
 	while((len=node.make())>0)
 	{
-		 cout<<node.ans;
+		 for(int i=0;i<len;i++)
+			 printf("%c",node.ans[i]);
+//		 getchar();
 	}
 	
-	
+//	cout<<"over"<<endl;
 	
 	 return 0;
 }

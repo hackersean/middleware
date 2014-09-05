@@ -40,8 +40,8 @@ class NODE            //处理节点
      LL num;
 	 DATA *data;
 	 char ans[BUFFER];
-     void play(char *str,LL len);
-     LL make();
+     int play(char *str,int len);
+     int make();
     
       
      NODE(DATA *);
