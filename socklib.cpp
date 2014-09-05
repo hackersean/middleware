@@ -59,8 +59,9 @@ c_client::c_client(string host,int port)
          
          while(connect(fd, (sockaddr *)& addr, sizeof(addr))!=0)
          {
+			        cout<<"link error"<<endl;
 		            continue;
-		}
+		  }
 }
 
 int c_client::send(char buffer[],int len,int flag)
