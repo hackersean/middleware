@@ -1,3 +1,3 @@
 #!/bin/bash
-./client 10.97.240.135 8888 ~/result
+./client 127.0.0.1 8888 ~/result
 

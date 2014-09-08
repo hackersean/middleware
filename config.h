@@ -11,6 +11,7 @@
 #include <arpa/inet.h>
 #include <sys/mman.h>   //mmap头文件
 #include   <pthread.h>   //线程库
+#include <semaphore.h>
 
 #include <stdio.h>
 #include <string.h>
