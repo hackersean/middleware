@@ -55,8 +55,7 @@ int main(int ac,char *av[])
     pthread_t res_pid;
     void *arg[]={&res,&data};
     pthread_create(&res_pid,NULL,response,arg);
-
-//=========================	
+//==============================================	
 //======receve request thread====
     int req=serve.accept();
     pthread_t req_pid;
