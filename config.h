@@ -10,8 +10,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/mman.h>   //mmap头文件
-#include   <pthread.h>   //线程库
+#include <pthread.h>   //线程库
 #include <semaphore.h>
+#include <sys/time.h>
+
 
 #include <stdio.h>
 #include <string.h>

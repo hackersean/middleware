@@ -74,6 +74,17 @@ void *request(void* arg)
 //--------------------------------------------
 int main(int ac,char *av[])
 {
+//=============time==================
+        struct  timeval  start;
+        struct  timeval  end;
+        long long timer;
+        gettimeofday(&start,NULL);
+//====================================
+  
+  
+
+
+
         if(ac!=4)
         {
 			    perror("argument error");
@@ -88,11 +99,7 @@ int main(int ac,char *av[])
 		    pthread_mutex_init(&flag[i],NULL);
 		}
 		
-		cout<<av[1]<<" "<<port<<endl;
-		
-		
-		
-		
+//		cout<<av[1]<<" "<<port<<endl;	
         
 //=========receve data==========
         c_client cev(av[1],port); 
@@ -116,7 +123,7 @@ int main(int ac,char *av[])
 		   pthread_create(&pid[i],NULL,request,&req);
 	   }
 	
-	   cout<<"ok"<<endl;
+//	   cout<<"ok"<<endl;
 
 		
 // =============================
@@ -129,6 +136,11 @@ int main(int ac,char *av[])
 */
 		pthread_join(cev_pid,NULL);
 		
-		cout<<"over"<<endl;
+		
+//=======================time==================		
+	gettimeofday(&end,NULL);
+  timer = 1000 * (end.tv_sec-start.tv_sec)+ end.tv_usec-start.tv_usec;
+  printf("cost=%lld\n",timer);
+ //============================================
          return 0;
 }
