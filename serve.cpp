@@ -3,7 +3,7 @@
 using namespace std;
 #define REQ_BUFF 1
 
-char path[]="/data/data";
+char *path;
 char req_buff[REQ_BUFF];
 static int count=0;                           //请求数
 
@@ -48,16 +48,16 @@ void *request(void *arg)
 
 int main(int ac,char *av[])
 {
-	if(ac!=2)
+	if(ac!=3)
 	{
 		oops("argument error");
 	} 
 //	cout<<"start"<<endl;
-	c_serve serve(atoi(av[1]));
+	c_serve serve(atoi(av[2]));
 	cout<<"start"<<endl;
 	
 //======data transform=======
-    DATA data(path);                   //read data
+    DATA data(av[1]);                   //read data
     
     int res=serve.accept();
     
