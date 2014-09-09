@@ -1,7 +1,7 @@
 #include "socklib.h"
 #include "strplay.h"
 using namespace std;
-#define REQ_BUFF 300
+#define REQ_BUFF 1
 
 char path[]="/data/data";
 char req_buff[REQ_BUFF];
@@ -17,11 +17,16 @@ void *response(void *tp)
 
 		while(fgets(temp.str,BUFFER,data->fp)!=NULL)
 		{
-			  if(count==0) continue;
+			  //cout<<"response "<<count<<endl;
+			  while(count==0)
+			 {
+			  }
 			  len=temp.play();
 			  send(fd,temp.ans,len,0);
 			  __sync_sub_and_fetch(&count,1); 
+//			  cout<<"respons "<<count<<endl;
 		}
+//		cout<<"end"<<endl;
 }
 //========================
 
@@ -29,11 +34,14 @@ void *response(void *tp)
 //======receve request=========
 void *request(void *arg)
 {
+//	cout<<"arg "<<arg<<endl;
 	int fd=*(int*)arg;
+//	cout<<"fd "<<fd<<endl;
     int x;
     while((x=recv(fd,req_buff,REQ_BUFF,0))==true)
-	{
+	{      
 		   __sync_add_and_fetch(&count,x); 
+//		   cout<<"request "<<x<<" "<<count<<endl;
 	} 
 }
 //=========================
@@ -52,16 +60,24 @@ int main(int ac,char *av[])
     DATA data(path);                   //read data
     
     int res=serve.accept();
-    pthread_t res_pid;
-    void *arg[]={&res,&data};
+    
+/*	recv(res,req_buff,REQ_BUFF,0);
+   	cout<<req_buff<<endl;
+*/    
+	pthread_t res_pid;
+	void *arg[]={&res,&data};
     pthread_create(&res_pid,NULL,response,arg);
 //==============================================	
 //======receve request thread====
     int req=serve.accept();
     pthread_t req_pid;
+    
+//	recv(req,req_buff,REQ_BUFF,0);
+//    cout<<req_buff<<endl;
+//    cout<<"req fd "<<req<<" "<<&req<<endl;
 	pthread_create(&req_pid,NULL,request,&req);
 //=======================
 	pthread_join(res_pid,NULL);
-cout<<endl<<"over"<<endl;
+     cout<<"over"<<endl;
 	 return 0;
 }
