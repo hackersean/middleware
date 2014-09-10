@@ -1,16 +1,31 @@
 #include "socklib.h"
 
 #define MAX 4096
-#define THREAD 46
+#define THREAD 48
 
 char buff[MAX];
+int pt=0,pw=0;
+struct IOS
+{
+    char buff[MAX];
+	int len;
+};
+
+IOS *iotemp;
 FILE *file;
-pthread_t pid[THREAD];
+
 static int count=THREAD;                     //request count
 
+timeval starttime;
+timeval endtime; 
+
+pthread_t pid[THREAD];
+bool bj[THREAD];
 pthread_mutex_t flag[THREAD];
-queue <int> q;
-pthread_mutex_t mutex;
+//queue <int> q;
+pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
+
 
 
 inline void oops(char str[]){
@@ -21,34 +36,59 @@ inline void oops(char str[]){
 //=======receve data==========
 void *receive(void* arg)
 {
-	 int len=0;
-	 int temp;
-
+	 int tp,len;
+     iotemp=new IOS[10474544];
+	 
 	 c_client *ceve=(c_client *)arg;
 	 while(true)
 	 {
 		 len=ceve->recv(buff,MAX);
-//		 cout<<buff<<endl;
-		 if(len==0) break;
+		 tp=pw;
+//		 __sync_add_and_fetch(&pw,1);
+//		 cout<<"rea "<<pt<<" "<<pw<<endl;
+//		 cout<<len<<endl;
+		 if(len==0) 
+		 {
+			 //=========timer========================
+		     
+			 break;
+		 }
+		 int ptid=THREAD-1;
+		
 		 for(int i=0;i<len;i++)
 		 {
 			 if(buff[i]=='\n')
-			 {
-                pthread_mutex_lock(&mutex);
-                if(q.empty()!=true)
-				{
-//					cout<<"unlock "<<q.front()<<endl;
-					pthread_mutex_unlock(&flag[q.front()]);
-					q.pop();
-			    }
+			 {     //cout<<ptid<<" xxx "<<bj[ptid]<<endl;
+//                pthread_mutex_lock(&mutex);
+                //if(q.empty()!=true)
 				
-				pthread_mutex_unlock(&mutex);
+//					cout<<"unlock "<<q.front()<<" "<<q.size()<<endl;
+                    while(bj[ptid]!=1)
+					{//cout<<ptid<<" "<<bj[ptid]<<endl;
+						if(ptid>0)
+						{
+							__sync_sub_and_fetch(&ptid,1);
+					    }
+						else __sync_add_and_fetch(&ptid,THREAD-1);
+					}	
+					//cout<<ptid<<endl;
+					__sync_sub_and_fetch(&bj[ptid],1);
+//					cout<<ptid<<" rec "<<bj[ptid]<<endl;
+					pthread_mutex_unlock(&flag[ptid]);
+//					q.pop();
+			    
+				
+//				pthread_mutex_unlock(&mutex);
 			 }
 		 }
-		 fwrite(buff,len,1,file);    
+//		 cout<<"rec "<<pt<<" "<<pw<<endl;
+//		 __sync_add_and_fetch(&pt,1);
+		 fwrite(buff,len,1,file);
 	 }
-	 fclose(file);
-     
+//	 cout<<"woca"<<endl;
+	fclose(file);	 
+	 
+	 
 }
 //===============================
 
@@ -58,15 +98,19 @@ void *request(void* arg)
 {
 	c_client *ceve=(c_client *)arg;
 	int id=__sync_sub_and_fetch(&count,1);
-    
 	while(true)
 	{
 //		  cout<<"lock "<<id<<endl;
-		  pthread_mutex_lock(&flag[id]);
-		  ceve->send("g",1);	
-		  pthread_mutex_lock(&mutex);
-          q.push(id);
-		  pthread_mutex_unlock(&mutex);
+          pthread_mutex_lock(&flag[id]);
+		  ceve->send("g",1);
+		  
+		  __sync_add_and_fetch(&bj[id],1);
+//		  cout<<id<<" bj "<<bj[id]<<endl;
+		  	
+//		  pthread_mutex_lock(&mutex);
+//          q.push(id);
+
+//		  pthread_mutex_unlock(&mutex);
 	}
 }
 //====================================
@@ -75,8 +119,7 @@ void *request(void* arg)
 int main(int ac,char *av[])
 {
 //=============time==================
-       timeval starttime;
-	   timeval endtime; 
+
        gettimeofday(&starttime,0);
 //====================================
   
@@ -86,12 +129,11 @@ int main(int ac,char *av[])
 
         if(ac!=4)
         {
-			    perror("argument error");
+			    oops("argument error");
 		} 
 		
 		int port=atoi(av[2]); 
 		
-		pthread_mutex_init(&mutex,NULL);
 		
 		for(int i=0;i<THREAD;i++)
 	    {
@@ -111,6 +153,10 @@ int main(int ac,char *av[])
 	    pthread_create(&cev_pid,NULL,receive,&cev);
 	    
 //===========================
+//===============ioasny===============
+       
+
+//====================================
 
 // =======request thread pool=======
        c_client req(av[1],port); 
@@ -134,13 +180,13 @@ int main(int ac,char *av[])
 		}
 */
 		pthread_join(cev_pid,NULL);
+
+
+		gettimeofday(&endtime,0);
+		unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
+		timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
+		printf("count=%llu\n",timeuse);
+			 
 		
-		
-//=======================time==================		
-        gettimeofday(&endtime,0);
-        unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
-        timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
-        printf("count=%llu",timeuse);
- //============================================
          return 0;
 }
