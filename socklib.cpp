@@ -28,7 +28,7 @@ c_serve::c_serve(int port)     //绑定一个本地套接字
 		       oops("bind error");   
 		}
 		//start listen
-		if(listen(fd,5)<0)
+		if(listen(fd,1024)<0)
 		{
 		       oops("listen error");
 		}
@@ -59,7 +59,7 @@ c_client::c_client(string host,int port)
          
          while(connect(fd, (sockaddr *)& addr, sizeof(addr))!=0)
          {
-			        cout<<"link error"<<endl;
+			       // cout<<"link error"<<endl;
 		            continue;
 		  }
 }

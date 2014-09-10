@@ -1,10 +1,11 @@
 #include "socklib.h"
 
 #define MAX 4096
-#define THREAD 48
+#define THREAD 72
 
-char buff[MAX];
-int pt=0,pw=0;
+
+int pt=0,pw=0,pr=0;
+bool frd=0;
 struct IOS
 {
     char buff[MAX];
@@ -13,7 +14,7 @@ struct IOS
 
 IOS *iotemp;
 FILE *file;
-
+pthread_t io_pid;
 static int count=THREAD;                     //request count
 
 timeval starttime;
@@ -22,11 +23,7 @@ timeval endtime;
 pthread_t pid[THREAD];
 bool bj[THREAD];
 pthread_mutex_t flag[THREAD];
-<<<<<<< HEAD
-//queue <int> q;
-=======
-queue <int> q;
->>>>>>> 3bbd85e35321203d1767bb06f1bfe279bfb9943a
+ 
 pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
 
@@ -37,60 +34,109 @@ inline void oops(char str[]){
 	    exit(1);
 }
 
-//=======receve data==========
-void *receive(void* arg)
+
+
+
+
+
+
+
+
+//=============play asny==========
+
+void *findasny(void *)
 {
-	 int tp,len;
-     iotemp=new IOS[10474544];
-	 
-	 c_client *ceve=(c_client *)arg;
-	 while(true)
-	 {
-		 len=ceve->recv(buff,MAX);
-		 tp=pw;
-//		 __sync_add_and_fetch(&pw,1);
-//		 cout<<"rea "<<pt<<" "<<pw<<endl;
-//		 cout<<len<<endl;
-		 if(len==0) 
-		 {
-			 //=========timer========================
-		     
-			 break;
-		 }
+	while(true)
+	{
+         while(pr==pw)
+		{
+			if(frd==true) goto sx;
+		}
 		 int ptid=THREAD-1;
 		
-		 for(int i=0;i<len;i++)
+		 for(int i=0;i<iotemp[pr].len;i++)
 		 {
-			 if(buff[i]=='\n')
-			 {     //cout<<ptid<<" xxx "<<bj[ptid]<<endl;
-//                pthread_mutex_lock(&mutex);
-                //if(q.empty()!=true)
-				
-//					cout<<"unlock "<<q.front()<<" "<<q.size()<<endl;
+			 if(iotemp[pr].buff[i]=='\n')
+			 {     
                     while(bj[ptid]!=1)
-					{//cout<<ptid<<" "<<bj[ptid]<<endl;
+					{ 
 						if(ptid>0)
 						{
 							__sync_sub_and_fetch(&ptid,1);
 					    }
 						else __sync_add_and_fetch(&ptid,THREAD-1);
 					}	
-					//cout<<ptid<<endl;
 					__sync_sub_and_fetch(&bj[ptid],1);
-//					cout<<ptid<<" rec "<<bj[ptid]<<endl;
 					pthread_mutex_unlock(&flag[ptid]);
-//					q.pop();
-			    
-				
-//				pthread_mutex_unlock(&mutex);
+
 			 }
 		 }
-//		 cout<<"rec "<<pt<<" "<<pw<<endl;
-//		 __sync_add_and_fetch(&pt,1);
-		 fwrite(buff,len,1,file);
+		 __sync_add_and_fetch(&pr,1);
+		 
+	}
+sx:;
+
+
+}
+
+
+
+//================================
+//=============io asny============
+void *ioasny(void *)
+{ 
+    while(true)
+	{
+		while(pt==pw)
+		{
+			if(frd==true)
+			{
+                 fclose(file);	
+			  //=======================time==================		
+				gettimeofday(&endtime,0);
+				unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
+				timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
+				printf("count=%llu",timeuse);
+				fflush(stdout);
+
+                //============================================
+				exit(0);
+			}
+		}
+		
+		fwrite(iotemp[pt].buff,iotemp[pt].len,1,file);
+		__sync_add_and_fetch(&pt,1);
+	
+	}
+    
+
+}
+
+
+//================================
+//=======receve data==========
+void *receive(void* arg)
+{
+	 int temp,len;
+     iotemp=new IOS[10474544];
+
+//	 cout<<"ioasny"<<endl;      
+     
+     pthread_create(&io_pid,NULL,ioasny,NULL);
+//	 cout<<" io receive"<<endl;
+	 c_client *ceve=(c_client *)arg;
+	 while(true)
+	 {
+		 iotemp[pw].len=ceve->recv(iotemp[pw].buff,MAX);
+		 if(iotemp[pw].len==0) 
+		 {
+		     __sync_add_and_fetch(&frd,1);
+			 break;
+		 }
+		 __sync_add_and_fetch(&pw,1);
 	 }
 //	 cout<<"woca"<<endl;
-	fclose(file);	 
+	
 	 
 	 
 }
@@ -105,9 +151,9 @@ void *request(void* arg)
 	while(true)
 	{
 //		  cout<<"lock "<<id<<endl;
+          if(frd==true) break;
           pthread_mutex_lock(&flag[id]);
 		  ceve->send("g",1);
-		  
 		  __sync_add_and_fetch(&bj[id],1);
 //		  cout<<id<<" bj "<<bj[id]<<endl;
 		  	
@@ -151,21 +197,20 @@ int main(int ac,char *av[])
 //        cev.send("receve data\n\0",sizeof("receve data\n\0"));
 
         pthread_t cev_pid;
-        if((file=fopen(av[3],"w"))==NULL)
-			 oops("fwrite fail"); 
-	    
 	    pthread_create(&cev_pid,NULL,receive,&cev);
 	    
 //===========================
 //===============ioasny===============
-       
+        if((file=fopen(av[3],"w"))==NULL)
+			 oops("fwrite fail"); 
+
+
 
 //====================================
 
 // =======request thread pool=======
        c_client req(av[1],port); 
-
-//       req.send("receve request\n\0",sizeof("receve request\n\0"));
+ 
 
 		for(int i=0;i<THREAD;i++)
 	   {
@@ -173,36 +218,18 @@ int main(int ac,char *av[])
 	   }
 	
 //	   cout<<"ok"<<endl;
-
+      
+	  pthread_t fy_pid;
+	  pthread_create(&fy_pid,NULL,findasny,NULL);
 		
 // =============================
 //=============waite thread=====
-/* 
-		for(int i=0;i<THREAD;i++)
-	    {
-             pthread_join(pid[i],NULL);
-		}
-*/
-		pthread_join(cev_pid,NULL);
 
+//		pthread_join(cev_pid,NULL);
+        pthread_join(io_pid,NULL);
 
-		gettimeofday(&endtime,0);
-		unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
-		timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
-		printf("count=%llu\n",timeuse);
-			 
+ 
 		
-<<<<<<< HEAD
-=======
-		
-//=======================time==================		
-        gettimeofday(&endtime,0);
-        unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
-        timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
-        printf("count=%llu",timeuse);
-		fflush(stdout);
 
- //============================================
->>>>>>> 3bbd85e35321203d1767bb06f1bfe279bfb9943a
          return 0;
 }
