@@ -1,7 +1,7 @@
 #include "socklib.h"
 
 #define MAX 4096
-#define THREAD 46
+#define THREAD 23
 
 char buff[MAX];
 FILE *file;
@@ -75,10 +75,9 @@ void *request(void* arg)
 int main(int ac,char *av[])
 {
 //=============time==================
-        struct  timeval  start;
-        struct  timeval  end;
-        long long timer;
-        gettimeofday(&start,NULL);
+       timeval starttime;
+	   timeval endtime; 
+       gettimeofday(&starttime,0);
 //====================================
   
   
@@ -138,9 +137,10 @@ int main(int ac,char *av[])
 		
 		
 //=======================time==================		
-	gettimeofday(&end,NULL);
-  timer = 1000 * (end.tv_sec-start.tv_sec)+ end.tv_usec-start.tv_usec;
-  printf("cost=%lld\n",timer);
+        gettimeofday(&endtime,0);
+        unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
+        timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
+        printf("count=%llu",timeuse);
  //============================================
          return 0;
 }

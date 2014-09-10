@@ -13,6 +13,7 @@
 #include <pthread.h>   //Ïß³Ì¿â
 #include <semaphore.h>
 #include <sys/time.h>
+#include <time.h>
 
 
 #include <stdio.h>
