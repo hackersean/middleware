@@ -14,7 +14,7 @@ struct NODE
 {
 	 LL num;
 	 char *ps;
-     char str[BUFFER];
+     char *str;
 	 char ans[BUFFER];
      
 	int play()

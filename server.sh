@@ -1,2 +1,2 @@
 #!/bin/bash
-./serve 8888
+./serve $1 $2

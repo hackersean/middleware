@@ -10,7 +10,9 @@ static int count=THREAD;                     //request count
 
 pthread_mutex_t flag[THREAD];
 queue <int> q;
-pthread_mutex_t mutex;
+pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
+
 
 
 inline void oops(char str[]){
@@ -91,7 +93,6 @@ int main(int ac,char *av[])
 		
 		int port=atoi(av[2]); 
 		
-		pthread_mutex_init(&mutex,NULL);
 		
 		for(int i=0;i<THREAD;i++)
 	    {
@@ -141,6 +142,8 @@ int main(int ac,char *av[])
         unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
         timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
         printf("count=%llu",timeuse);
+		fflush(stdout);
+
  //============================================
          return 0;
 }
