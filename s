@@ -1,2 +1,2 @@
 #!/bin/bash
-./serve.h /data/data 8888
+./server.sh /data/data 8888

@@ -22,7 +22,11 @@ timeval endtime;
 pthread_t pid[THREAD];
 bool bj[THREAD];
 pthread_mutex_t flag[THREAD];
+<<<<<<< HEAD
 //queue <int> q;
+=======
+queue <int> q;
+>>>>>>> 3bbd85e35321203d1767bb06f1bfe279bfb9943a
 pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
 
@@ -188,5 +192,17 @@ int main(int ac,char *av[])
 		printf("count=%llu\n",timeuse);
 			 
 		
+<<<<<<< HEAD
+=======
+		
+//=======================time==================		
+        gettimeofday(&endtime,0);
+        unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
+        timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
+        printf("count=%llu",timeuse);
+		fflush(stdout);
+
+ //============================================
+>>>>>>> 3bbd85e35321203d1767bb06f1bfe279bfb9943a
          return 0;
 }
