@@ -1,7 +1,7 @@
 #include "socklib.h"
 
 #define MAX 4096
-#define THREAD 23
+#define THREAD 46
 
 char buff[MAX];
 FILE *file;
