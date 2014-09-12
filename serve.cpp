@@ -51,11 +51,7 @@ void *response(void *tp)
 	   NODE temp;
 		while(iogets(temp.str)>0)
 		{
-<<<<<<< HEAD
-//			  cout<<"response 1:"<<count<<endl;
 
-=======
->>>>>>> 8329c407aeafc20938a2aaa21a0c80407e815133
 			  while(count==0)
 			 {    
 			  }
