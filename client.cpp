@@ -1,7 +1,7 @@
 #include "socklib.h"
 
 #define MAX 4096
-#define THREAD 72
+
 
 
 int pt=0,pw=0,pr=0;
@@ -34,18 +34,10 @@ inline void oops(char str[]){
 	    exit(1);
 }
 
-
-
-
-
-
-
-
-
 //=============play asny==========
-
+int tj=0;
 void *findasny(void *)
-{
+{  
 	while(true)
 	{
          while(pr==pw)
@@ -59,13 +51,16 @@ void *findasny(void *)
 			 if(iotemp[pr].buff[i]=='\n')
 			 {     
                     while(bj[ptid]!=1)
-					{ 
+					{    
+//						++tj;
+						
 						if(ptid>0)
 						{
 							__sync_sub_and_fetch(&ptid,1);
 					    }
 						else __sync_add_and_fetch(&ptid,THREAD-1);
 					}	
+//					if(tj>1) cout<<tj<<endl; 
 					__sync_sub_and_fetch(&bj[ptid],1);
 					pthread_mutex_unlock(&flag[ptid]);
 
@@ -96,7 +91,7 @@ void *ioasny(void *)
 				gettimeofday(&endtime,0);
 				unsigned long long timeuse  = 1000000*(endtime.tv_sec - starttime.tv_sec) + endtime.tv_usec - starttime.tv_usec;
 				timeuse /=1000;        //除以1000则进行毫秒计时，如果除以1000000则进行秒级别计时，如果除以1则进行微妙级别计时
-				printf("count=%llu",timeuse);
+				printf("cost=%llu",timeuse);
 				fflush(stdout);
 
                 //============================================
@@ -147,6 +142,7 @@ void *receive(void* arg)
 void *request(void* arg)
 {
 	c_client *ceve=(c_client *)arg;
+ //   ceve->socket_config();
 	int id=__sync_sub_and_fetch(&count,1);
 	while(true)
 	{
@@ -155,12 +151,6 @@ void *request(void* arg)
           pthread_mutex_lock(&flag[id]);
 		  ceve->send("g",1);
 		  __sync_add_and_fetch(&bj[id],1);
-//		  cout<<id<<" bj "<<bj[id]<<endl;
-		  	
-//		  pthread_mutex_lock(&mutex);
-//          q.push(id);
-
-//		  pthread_mutex_unlock(&mutex);
 	}
 }
 //====================================
@@ -173,22 +163,13 @@ int main(int ac,char *av[])
        gettimeofday(&starttime,0);
 //====================================
   
-  
-
-
-
         if(ac!=4)
         {
-			    oops("argument error");
+			oops("argument error");
 		} 
 		
 		int port=atoi(av[2]); 
 		
-		
-		for(int i=0;i<THREAD;i++)
-	    {
-		    pthread_mutex_init(&flag[i],NULL);
-		}
 		
 //		cout<<av[1]<<" "<<port<<endl;	
         
@@ -204,28 +185,29 @@ int main(int ac,char *av[])
         if((file=fopen(av[3],"w"))==NULL)
 			 oops("fwrite fail"); 
 
-
+ 
 
 //====================================
 
 // =======request thread pool=======
-       c_client req(av[1],port); 
- 
 
+	   pthread_t fy_pid;
+	  
 		for(int i=0;i<THREAD;i++)
 	   {
-		   pthread_create(&pid[i],NULL,request,&req);
+		   pthread_mutex_init(&flag[i],NULL);
+		   pthread_create(&pid[i],NULL,request,new c_client(av[1],port));   
 	   }
+	   pthread_create(&fy_pid,NULL,findasny,NULL);
 	
 //	   cout<<"ok"<<endl;
       
-	  pthread_t fy_pid;
-	  pthread_create(&fy_pid,NULL,findasny,NULL);
+
 		
 // =============================
 //=============waite thread=====
 
-//		pthread_join(cev_pid,NULL);
+
         pthread_join(io_pid,NULL);
 
  

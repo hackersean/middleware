@@ -74,15 +74,9 @@ int c_client::recv(char buffer[],int len,int flag)
          return ::recv(fd,buffer,len,flag);
 }
 
-void c_client::socket_config(int f)
+void c_client::socket_config()
 {
-	   int flags  = fcntl(fd,F_GETFL,0);                          //获取文件的flags值。
-	   if(f==0)
-	   {
-              fcntl(fd,F_SETFL,flags&~O_NONBLOCK);      //设置成阻塞模式；  
-		}
-		else
-		{
-                 fcntl(fd, F_SETFL, flags | O_NONBLOCK);   //设置成非阻塞模式；
-		}   
+
+	   int on=1;
+       setsockopt(fd, IPPROTO_TCP, TCP_NODELAY,&on,sizeof(on));        
 }

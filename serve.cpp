@@ -54,13 +54,11 @@ void *response(void *tp)
        int len=0;
 	    NODE temp;
 		while(iogets(temp.str)>0)
-		{     
+		{
+
 			  while(count==0)
-			 {     
-				  tj=0;
-				  ++tj;
-			  }  
-              //cout<<tj<<endl;
+			 {    
+			  }
 			  len=temp.play();
 			  
 			  send(fd,temp.ans,len,0);

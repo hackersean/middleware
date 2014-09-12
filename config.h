@@ -14,7 +14,7 @@
 #include <semaphore.h>
 #include <sys/time.h>
 #include <time.h>
-
+#include <netinet/tcp.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -30,7 +30,10 @@ using namespace std;
 #define LL long long
 #define BUFFER 300
 #define THREAD 10000
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2b056abefce1da911d30b3181d574e38074f3ab5
 
 
 
