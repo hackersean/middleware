@@ -53,11 +53,13 @@ void *response(void *tp)
 		while(iogets(temp.str)>0)
 		{
 //			  cout<<"response 1:"<<count<<endl;
+
 			  while(count==0)
 			 {    
 //				  sleep(1);
 //				  cout<<"response count:"<<count<<endl;
 			  }
+
 			  len=temp.play();
 			  send(fd,temp.ans,len,0);
 			  __sync_sub_and_fetch(&count,1); 
