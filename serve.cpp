@@ -3,9 +3,12 @@
 using namespace std;
 #define REQ_BUFF 256
 
+
+
 char *path;
 char req_buff[REQ_BUFF];
 static volatile  int count=0;      //请求数
+pthread_t pid[THREAD+10];
 
 struct IOS
 {
@@ -44,20 +47,28 @@ int iogets(char* &str)
 
 //============================
 //======response data=========
+int tj=0;
 void *response(void *tp)
 {
 	   int fd=*(int *)tp;
        int len=0;
-	   NODE temp;
+	    NODE temp;
 		while(iogets(temp.str)>0)
-		{
+		{     
 			  while(count==0)
-			 {    
-			  }
+			 {     
+				  tj=0;
+				  ++tj;
+			  }  
+              //cout<<tj<<endl;
 			  len=temp.play();
+			  
 			  send(fd,temp.ans,len,0);
 			  __sync_sub_and_fetch(&count,1); 
-		}
+			  
+//			  cout<<"count "<<count<<endl;
+		} 
+		cout<<tj<<endl;
 //		cout<<"end"<<endl;
 }
 //========================
@@ -71,6 +82,7 @@ void *request(void *arg)
     while((x=recv(fd,req_buff,REQ_BUFF,0))>0)
 	{      
 		   __sync_add_and_fetch(&count,x); 
+//		   cout<<"x "<<x<<" "<<count<<endl;
 	} 
 }
 //=========================
@@ -82,7 +94,7 @@ int main(int ac,char *av[])
 		oops("argument error");
 	} 
 //	cout<<"start"<<endl;
-	c_serve serve(atoi(av[2]));
+	c_serve serve(atoi(av[2]));                         //socket创建
 	
 //========io asny============
 
@@ -93,19 +105,25 @@ int main(int ac,char *av[])
 
 //===========================
 //======data transform=======
-    
-    
-    int res=serve.accept();
+    int res=serve.accept();                             //建立数据连接
     cout<<"start"<<endl;
 	pthread_t res_pid;
     pthread_create(&res_pid,NULL,response,&res);
+
+
 //==============================================	
 //======receve request thread====
-    int req=serve.accept();
-    pthread_t req_pid;
-	pthread_create(&req_pid,NULL,request,&req);
+    int req,pi=0;
+    while(pi<THREAD)
+	{ 
+	    req=serve.accept();
+	    pthread_create(&pid[pi],NULL,request,&req);        //建立请求连接
+	    ++pi;
+	}
+
 //=======================
 	pthread_join(res_pid,NULL);
+	cout<<tj<<endl;
      cout<<"over"<<endl;
 	 return 0;
 }

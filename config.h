@@ -29,6 +29,7 @@ using namespace std;
 
 #define LL long long
 #define BUFFER 300
+#define THREAD 10000
 
 
 
